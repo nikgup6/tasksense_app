@@ -1,74 +1,256 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import React, { useEffect, useState } from "react";
+import {
+  Image,
+  StyleSheet,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
+import { Button, Text, Card } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
+  const [userName, setUserName] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [selectedAppointment, setSelectedAppointment] = useState<any | null>(
+    null
+  );
+  const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
+  const router = useRouter();
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user");
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          setUserName(user.name);
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      const response = await fetch("https://192.168.2.118:5000/appointments");
+      const data = await response.json();
+      setAppointments(data);
+    };
+
+    fetchAppointments();
+  }, []);
+
+  const handleSelectAppointment = (appointment: any) => {
+    setSelectedAppointment(appointment);
+    setModalVisible(true);
+  };
+
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerBackgroundColor={{ light: "#fff", dark: "#fff" }}
       headerImage={
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
+          source={require("@/assets/images/auth.avif")}
           style={styles.reactLogo}
         />
-      }>
+      }
+    >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+        <ThemedText type="title">TaskSense</ThemedText>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
+
+      <View>
+        <Text style={styles.title}>
+          Welcome, {userName ? userName : "Guest"}!!!
+        </Text>
+        <ThemedText style={styles.subtitle}>
+          Simplified Management Portal
         </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+      </View>
+      <View>
+        <Button onPress={() => router.push("/(tabs)/RequestAppointmentScreen")}>
+          Add New Appointment
+        </Button>
+      </View>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>
+          📅 Upcoming(Approved) Appointments
+        </Text>
+        <FlatList
+          data={appointments.filter((appt) => appt.status === "upcoming")}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleSelectAppointment(item)}>
+              <Card style={styles.card}>
+                <Card.Content>
+                  <Text style={styles.appointmentTitle}>{item.title}</Text>
+                  <Text style={styles.appointmentDate}>
+                    {item.date} - {item.time}
+                  </Text>
+                </Card.Content>
+              </Card>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>⏲️ Pending Appointments</Text>
+        <FlatList
+          data={appointments.filter((appt) => appt.status === "pending")}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleSelectAppointment(item)}>
+              <Card style={styles.card}>
+                <Card.Content>
+                  <Text style={styles.appointmentTitle}>{item.title}</Text>
+                  <Text style={styles.appointmentDate}>
+                    {item.date} - {item.time}
+                  </Text>
+                </Card.Content>
+              </Card>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>🔙 Past Appointments</Text>
+        <FlatList
+          data={appointments.filter((appt) => appt.status === "past")}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleSelectAppointment(item)}>
+              <Card style={styles.card}>
+                <Card.Content>
+                  <Text style={styles.appointmentTitle}>{item.title}</Text>
+                  <Text style={styles.appointmentDate}>
+                    {item.date} - {item.time}
+                  </Text>
+                </Card.Content>
+              </Card>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            {selectedAppointment && (
+              <>
+                <Text style={styles.modalTitle}>
+                  {selectedAppointment.title}
+                </Text>
+                <Text style={styles.modalText}>
+                  📅 Date: {selectedAppointment.date}
+                </Text>
+                <Text style={styles.modalText}>
+                  ⏰ Time: {selectedAppointment.time}
+                </Text>
+                <Button
+                  mode="contained"
+                  onPress={() => setModalVisible(false)}
+                  style={styles.closeButton}
+                >
+                  Close
+                </Button>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
   },
   reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+    height: 170,
+    width: "100%",
+    position: "absolute",
   },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#333",
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 18,
+    marginBottom: 20,
+    color: "#555",
+    textAlign: "center",
+  },
+  section: {
+    marginVertical: 15,
+    paddingHorizontal: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#333",
+  },
+  card: {
+    marginBottom: 10,
+    padding: 10,
+  },
+  appointmentTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  appointmentDate: {
+    fontSize: 14,
+    color: "#555",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: "80%",
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 5,
+  },
+  closeButton: {
+    marginTop: 20,
+  },
+  container: { flex: 1, justifyContent: "center", alignItems: "center" },
 });
