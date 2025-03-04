@@ -14,7 +14,7 @@ export const requestAppointment = async (appointmentData) => {
 
 export const fetchStudentAppointments = async (studentEmail) => {
   try {
-    const response = await axios.get(`${API_URL}/student/${studentEmail}`);
+    const response = await axios.post(`${API_URL}/student/${studentEmail}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching appointments:", error);

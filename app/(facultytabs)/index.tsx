@@ -104,7 +104,7 @@ export default function HomeScreen() {
 
       <View>
         <Text style={styles.title}>
-          Welcome, {userName ? userName : "Guest"}!!!
+          Welcome,Prof. {userName ? userName : "Guest"}!!!
         </Text>
         <ThemedText style={styles.subtitle}>
           Simplified Management Portal

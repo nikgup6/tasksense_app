@@ -5,6 +5,10 @@ import { useRouter, useSegments } from "expo-router";
 // User type definition
 type User = {
   name: string;
+  email: string;
+  role: string;
+  studentId: string;
+  token: string;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -75,11 +79,20 @@ export default function AuthProvider({
         const data = await response.json();
         const newUser: User = {
           name: data["FullName"],
+          email: data["email"],
+          role: data["role"],
+          studentId: data["studentId"],
+          token: data["token"],
         };
-
         await AsyncStorage.setItem("user", JSON.stringify(newUser));
         setUser(newUser);
-        router.replace("/(tabs)");
+        if (data["role"] == "Student") {
+          router.replace("/(tabs)");
+        }
+        if (data["role"] == "Faculty") {
+          router.replace("/(facultytabs)/index");
+        }
+
         return true;
       }
     } catch (error) {

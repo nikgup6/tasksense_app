@@ -13,7 +13,7 @@ const PORT = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/api/users", userRoutes); // Use the user routes
-app.use("/api/appointments", require("./routes/appointments"));
+app.use("/api/appointments", require("./routes/appointment"));
 // MongoDB connection URL (use your MongoDB Atlas URI here)
 const dbURI = 'mongodb+srv://b8286006:WXUCsMiBpxKSdQNG@cluster1.btk0n.mongodb.net/tasksensee?retryWrites=true&w=majority&appName=cluster1';
 
@@ -37,72 +37,18 @@ const Faculty = mongoose.model('Faculty', new mongoose.Schema({
 }));
 
 
-// Faculty Registration Route
-app.post('/api/faculty/register', async (req, res) => {
-    const { FullName, email, password, facultyId } = req.body;
 
-    // Validation
-    if (!FullName || !email || !password || !facultyId) {
-        return res.status(400).json({ error: 'All fields are required' });
-    }
 
-    // Hash password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Save faculty to MongoDB
-    try {
-        const newFaculty = new Faculty({
-            FullName,
-            email,
-            password: hashedPassword,
-            facultyId,
-        });
-        await newFaculty.save();
-        res.status(201).json({ message: 'Faculty registered successfully' });
-    } catch (error) {
-        res.status(500).json({ error: 'Error registering faculty' });
-    }
-});
-
-// Faculty Login Route
-app.post('/api/faculty/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    // Find faculty in the database
-    try {
-        const faculty = await Faculty.findOne({ email });
-        if (!faculty) {
-            return res.status(404).json({ error: 'Faculty not found' });
-        }
-
-        // Check password
-        const isPasswordValid = await bcrypt.compare(password, faculty.password);
-        if (!isPasswordValid) {
-            return res.status(400).json({ error: 'Invalid credentials' });
-        }
-
-        // If using JWT (optional)
-        const token = jwt.sign({ id: faculty._id, email: faculty.email }, 'backend/.env', { expiresIn: '1h' });
-
-        res.status(200).json({
-            message: 'Login successful',
-            FullName: faculty.FullName,  // Include full name here
-            token: token,
-        });
-    } catch (error) {
-        res.status(500).json({ error: 'Error logging in faculty' });
-    }
-});
 
 
 
 
 
 // Handle POST request to register user
-
 // Handle POST request to register user
 app.post('/api/users/register', async (req, res) => {
     const { FullName, email, password, studentId, role, school } = req.body;
+    console.log('Received request:', req.body);
 
     // Validation
     if (!FullName || !email || !password || !studentId || !role || !school) {
@@ -110,6 +56,18 @@ app.post('/api/users/register', async (req, res) => {
     }
 
     try {
+        // Check if user with the same email already exists
+        const existingEmailUser = await User.findOne({ email: email });
+        if (existingEmailUser) {
+            return res.status(409).json({ error: 'Email already exists' }); // Return and stop execution here
+        }
+
+        // Check if user with the same studentId already exists
+        const existingStudentIdUser = await User.findOne({ studentId });
+        if (existingStudentIdUser) {
+            return res.status(409).json({ error: 'Student ID already exists' }); // Return and stop execution here
+        }
+
         // Hash password before saving to the database
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -122,10 +80,14 @@ app.post('/api/users/register', async (req, res) => {
             role,
             school
         });
+
         await newUser.save();
-        res.status(201).json({ message: 'User registered successfully' });
+        console.log('User registered successfully:', newUser); // Log for debugging
+        return res.status(201).json({ message: 'User registered successfully' });
+
     } catch (error) {
-        res.status(500).json({ error: 'Error registering user' });
+        console.error('Error registering user:', error); // Log for debugging
+        return res.status(500).json({ error: 'Error registering user' });
     }
 });
 
@@ -135,7 +97,7 @@ app.post('/api/users/login', async (req, res) => {
 
     // Validation
     if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
+        res.status(400).json({ error: 'Email and password are required' });
     }
 
     try {
@@ -157,6 +119,9 @@ app.post('/api/users/login', async (req, res) => {
         res.status(200).json({
             message: 'Login successful',
             FullName: user.FullName,
+            studentId: user.studentId,
+            email: user.email,
+            role: user.role,
             token: token,
         });
     } catch (error) {

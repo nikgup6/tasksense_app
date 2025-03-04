@@ -23,6 +23,9 @@ router.post('/api/users/login', async (req, res) => {
         res.status(200).json({
             message: 'Login successful',
             FullName: user.name, // Include the user's name
+            studentId: user.studentId,
+            email: user.email,
+            role: user.role,
         });
     } catch (error) {
         res.status(500).json({ error: 'Error logging in' });

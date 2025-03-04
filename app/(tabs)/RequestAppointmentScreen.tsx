@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { requestAppointment } from "@/services/api";
+import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RequestAppointmentScreen() {
   const [studentName, setStudentName] = useState("");
+  const [loading, setLoading] = useState(true);
   const [studentEmail, setStudentEmail] = useState("");
   const [facultyName, setFacultyName] = useState("");
   const [facultyEmail, setFacultyEmail] = useState("");
@@ -12,6 +15,25 @@ export default function RequestAppointmentScreen() {
   const [description, setdescription] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const router = useRouter();
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user");
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          setStudentName(user.name);
+          setStudentEmail(user.email);
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUser();
+  }, []);
 
   const handleSubmit = async () => {
     const appointmentData = {
@@ -40,12 +62,14 @@ export default function RequestAppointmentScreen() {
         label="Your Name"
         value={studentName}
         onChangeText={setStudentName}
+        editable={false}
       />
       <TextInput
         label="Your Email"
         value={studentEmail}
         onChangeText={setStudentEmail}
         keyboardType="email-address"
+        editable={false}
       />
       <TextInput
         label="Faculty Name"

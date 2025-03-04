@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const appointment = require("../models/appointment");
+const authMiddleware = require("../middleware/authMiddleware");
 
 // 📌 POST: Request an Appointment
 router.post("/", async (req, res) => {
@@ -22,6 +23,18 @@ router.post("/", async (req, res) => {
     res.status(201).json(savedappointment);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/appointments", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id; // Extract user ID from token
+    const appointments = await appointment.find({ userId }).sort({ date: 1 });
+
+    res.json({ success: true, appointments });
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 

@@ -17,7 +17,7 @@ import { Image } from "react-native";
 import { Link } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
 
-const roles = ["Teacher", "Student", "Bridge"];
+const roles = ["Faculty", "Student", "Bridge"];
 
 export default function SignUpPage() {
   const { signUp } = useAuth(); // Access the signUp function from useAuth
