@@ -1,4 +1,4 @@
-import { StyleSheet, useColorScheme } from "react-native";
+import { Image, StyleSheet, useColorScheme } from "react-native";
 import { useRouter } from "expo-router"; // Import useRouter
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -7,6 +7,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useAuth } from "@/hooks/useAuth";
 import { MaterialIcons } from "@expo/vector-icons";
 import { TouchableOpacity, View } from "react-native";
+import React from "react";
 
 export default function ExploreScreen() {
   const { signOut } = useAuth();
@@ -30,10 +31,8 @@ export default function ExploreScreen() {
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#6097ff", dark: "#6097ff" }}
       headerImage={
-        <IconSymbol
-          size={310}
-          color="#FFBABA"
-          name="space.dashboard"
+        <Image
+          source={require("../../../assets/images/list.png")}
           style={styles.headerImage}
         />
       }
@@ -79,10 +78,10 @@ export default function ExploreScreen() {
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: "#6097ff",
     bottom: -90,
     left: -35,
     position: "absolute",
+    objectFit: "cover",
   },
   darkBg: { backgroundColor: "black" },
   lightBg: { backgroundColor: "white" },

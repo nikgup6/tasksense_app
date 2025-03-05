@@ -55,7 +55,7 @@ export default function HomeScreen() {
         if (!token) throw new Error("No authentication token found");
 
         const response = await fetch(
-          `http://192.168.2.118:5000/api/appointments?email=${encodeURIComponent(
+          `http://192.168.2.118:5000/api/appointments/student/${encodeURIComponent(
             userEmail
           )}`,
           {
@@ -66,13 +66,11 @@ export default function HomeScreen() {
             },
           }
         );
+
         const text = await response.text(); // Get raw response
-        console.log("Raw Response:", text); // Log it
 
-        const data = JSON.parse(text); // Now parse JSON
-        if (!data.success) throw new Error(data.message);
-
-        setAppointments(data.appointments);
+        const data = JSON.parse(text); // Parse JSON
+        setAppointments(data); // Directly set the array
       } catch (error) {
         console.error("Error fetching appointments:", error);
       } finally {
@@ -141,19 +139,18 @@ export default function HomeScreen() {
               )}
             />
           </View>
-
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>⏲️ Pending Appointments</Text>
+            <Text style={styles.sectionTitle}>⏲️Pending Apointments</Text>
             <FlatList
               data={appointments.filter((appt) => appt.status === "pending")}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={(item) => item._id} // Use _id instead of id
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => handleSelectAppointment(item)}>
                   <Card style={styles.card}>
                     <Card.Content>
                       <Text style={styles.appointmentTitle}>{item.title}</Text>
                       <Text style={styles.appointmentDate}>
-                        {item.date} - {item.time}
+                        {new Date(item.date).toDateString()} - {item.time}
                       </Text>
                     </Card.Content>
                   </Card>

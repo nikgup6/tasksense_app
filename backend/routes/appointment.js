@@ -48,6 +48,16 @@ router.get("/student/:email", async (req, res) => {
   }
 });
 
+router.get('/faculty/:email', async (req, res) => {
+  try {
+      const { email } = req.params;
+      const appointments = await appointment.find({ facultyEmail: email });
+      res.json(appointments);
+  } catch (err) {
+      res.status(500).json({ error: err.message });
+  }
+});
+
 // 📌 PATCH: Faculty Updates Appointment Status
 router.patch("/:id", async (req, res) => {
   try {
