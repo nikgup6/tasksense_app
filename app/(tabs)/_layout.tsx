@@ -36,7 +36,7 @@ export default function TabLayout() {
             <IconSymbol
               size={28}
               name="house"
-              color={focused ? "#ea495c" : "grey"}
+              color={focused ? "#6097ff" : "grey"}
             />
           ),
         }}
@@ -49,7 +49,20 @@ export default function TabLayout() {
             <Entypo
               name="menu"
               size={28}
-              color={focused ? "#ea495c" : "grey"}
+              color={focused ? "#6097ff" : "grey"}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="RequestAppointmentScreen"
+        options={{
+          title: "Request appointment",
+          tabBarIcon: ({ color, focused }) => (
+            <Entypo
+              name="add-to-list"
+              size={28}
+              color={focused ? "#6097ff" : "grey"}
             />
           ),
         }}

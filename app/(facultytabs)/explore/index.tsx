@@ -79,7 +79,7 @@ export default function ExploreScreen() {
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: "#6097ff",
+    color: "#4e5180",
     bottom: -90,
     left: -35,
     position: "absolute",

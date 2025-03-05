@@ -63,6 +63,7 @@ export default function RequestAppointmentScreen() {
         value={studentName}
         onChangeText={setStudentName}
         editable={false}
+        style={styles.textinput}
       />
       <TextInput
         label="Your Email"
@@ -70,41 +71,48 @@ export default function RequestAppointmentScreen() {
         onChangeText={setStudentEmail}
         keyboardType="email-address"
         editable={false}
+        style={styles.textinput}
       />
       <TextInput
         label="Faculty Name"
         value={facultyName}
         onChangeText={setFacultyName}
+        style={styles.textinput}
       />
       <TextInput
         label="Faculty Email"
         value={facultyEmail}
         onChangeText={setFacultyEmail}
         keyboardType="email-address"
+        style={styles.textinput}
       />
       <TextInput
         label="Title"
         value={title}
         onChangeText={settitle}
         multiline
+        style={styles.textinput}
       />
       <TextInput
         label="Decription"
         value={description}
         onChangeText={setdescription}
         multiline
+        style={styles.textinput}
       />
       <TextInput
         label="Date"
         value={date}
         onChangeText={setDate}
         placeholder="YYYY-MM-DD"
+        style={styles.textinput}
       />
       <TextInput
         label="Time"
         value={time}
         onChangeText={setTime}
         placeholder="HH:MM AM/PM"
+        style={styles.textinput}
       />
       <Button mode="contained" onPress={handleSubmit} style={styles.button}>
         Submit Request
@@ -114,7 +122,8 @@ export default function RequestAppointmentScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 20 },
-  title: { fontSize: 20, fontWeight: "bold", marginBottom: 20 },
-  button: { marginTop: 20 },
+  textinput: { backgroundColor: "#6097ff", marginBottom: 10, color: "#fff" },
+  container: { padding: 20, backgroundColor: "#fff", flex: 1 },
+  title: { fontSize: 20, fontWeight: "bold", marginBottom: 20, color: "#333" },
+  button: { marginTop: 20, backgroundColor: "#6097ff" },
 });

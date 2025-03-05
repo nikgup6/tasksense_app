@@ -38,8 +38,13 @@ function useProtectedRoute(user: User | null) {
 
     if (!user) {
       router.replace("/login");
-    } else if (segments[0] !== "(tabs)") {
-      router.replace("/(tabs)");
+    } else if (segments[0] !== "(tabs)" && segments[0] !== "(facultytabs)") {
+      const userRole = user.role.toLowerCase();
+      if (userRole === "faculty") {
+        router.replace("/(facultytabs)");
+      } else if (userRole === "student") {
+        router.replace("/(tabs)");
+      }
     }
   }, [user, segments]);
 }
@@ -71,7 +76,10 @@ export default function AuthProvider({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email: email, password: password }),
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
         }
       );
 
@@ -86,11 +94,11 @@ export default function AuthProvider({
         };
         await AsyncStorage.setItem("user", JSON.stringify(newUser));
         setUser(newUser);
-        if (data["role"] == "Student") {
+        const userRole = data["role"].toLowerCase();
+        if (userRole === "faculty") {
+          router.replace("/(facultytabs)");
+        } else {
           router.replace("/(tabs)");
-        }
-        if (data["role"] == "Faculty") {
-          router.replace("/(facultytabs)/index");
         }
 
         return true;
@@ -117,12 +125,13 @@ export default function AuthProvider({
           headers: {
             "Content-Type": "application/json",
           },
+
           body: JSON.stringify({
             FullName: FullName,
             studentId: Studentid,
             role: role,
             school: school,
-            email: email,
+            email: email.toLowerCase(),
             password: password,
           }),
         }

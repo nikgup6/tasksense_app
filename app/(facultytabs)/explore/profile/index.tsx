@@ -59,14 +59,12 @@ export default function ProfileScreen() {
       <Text style={styles.title}>Profile</Text>
 
       <Text style={styles.label}>Full Name:</Text>
-      <TextInput editable={false} style={styles.text}>
-        {profile?.name}
-      </TextInput>
+      <Text style={styles.text}>{profile?.name}</Text>
 
       <Text style={styles.label}>Email:</Text>
       <Text style={styles.text}>{profile?.email}</Text>
 
-      <Text style={styles.label}>Student ID:</Text>
+      <Text style={styles.label}>Faculty ID:</Text>
       <Text style={styles.text}>{profile?.studentId}</Text>
 
       <Text style={styles.label}>Role:</Text>

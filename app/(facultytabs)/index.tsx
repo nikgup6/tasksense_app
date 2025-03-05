@@ -110,11 +110,6 @@ export default function HomeScreen() {
           Simplified Management Portal
         </ThemedText>
       </View>
-      <View>
-        <Button onPress={() => router.push("/(tabs)/RequestAppointmentScreen")}>
-          Add New Appointment
-        </Button>
-      </View>
 
       {loading ? (
         <Text style={styles.loadingText}>Loading appointments...</Text>
@@ -146,26 +141,6 @@ export default function HomeScreen() {
             <Text style={styles.sectionTitle}>⏲️ Pending Appointments</Text>
             <FlatList
               data={appointments.filter((appt) => appt.status === "pending")}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleSelectAppointment(item)}>
-                  <Card style={styles.card}>
-                    <Card.Content>
-                      <Text style={styles.appointmentTitle}>{item.title}</Text>
-                      <Text style={styles.appointmentDate}>
-                        {item.date} - {item.time}
-                      </Text>
-                    </Card.Content>
-                  </Card>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>🔙 Past Appointments</Text>
-            <FlatList
-              data={appointments.filter((appt) => appt.status === "past")}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => handleSelectAppointment(item)}>

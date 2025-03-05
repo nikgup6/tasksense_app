@@ -88,7 +88,7 @@ export default function SignUpPage() {
             />
           </View>
           <View style={styles.formGroup}>
-            <Text style={styles.label}>Student Id</Text>
+            <Text style={styles.label}>Id</Text>
             <TextInput
               style={styles.input}
               placeholder="Studentid"
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   submitButton: {
-    backgroundColor: "#ea495c",
+    backgroundColor: "#6097ff",
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   signupLink: {
-    color: "#ea495c",
+    color: "#6097ff",
     fontWeight: "bold",
     textDecorationLine: "underline",
   },
