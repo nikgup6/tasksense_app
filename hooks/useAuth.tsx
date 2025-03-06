@@ -70,7 +70,7 @@ export default function AuthProvider({
   const signIn = async (email: string, password: string): Promise<boolean> => {
     try {
       const response = await fetch(
-        "http://192.168.2.118:5000/api/users/login",
+        "http://192.168.2.112:5000/api/users/login",
         {
           method: "POST",
           headers: {
@@ -119,7 +119,7 @@ export default function AuthProvider({
   ): Promise<boolean> => {
     try {
       const response = await fetch(
-        "http://192.168.2.118:5000/api/users/register",
+        "http://192.168.2.112:5000/api/users/register",
         {
           method: "POST",
           headers: {

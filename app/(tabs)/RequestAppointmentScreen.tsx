@@ -4,6 +4,7 @@ import { TextInput, Button, Text } from "react-native-paper";
 import { requestAppointment } from "@/services/api";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RequestAppointmentScreen() {
   const [studentName, setStudentName] = useState("");
@@ -56,68 +57,70 @@ export default function RequestAppointmentScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Request an Appointment</Text>
-      <TextInput
-        label="Your Name"
-        value={studentName}
-        onChangeText={setStudentName}
-        editable={false}
-        style={styles.textinput}
-      />
-      <TextInput
-        label="Your Email"
-        value={studentEmail}
-        onChangeText={setStudentEmail}
-        keyboardType="email-address"
-        editable={false}
-        style={styles.textinput}
-      />
-      <TextInput
-        label="Faculty Name"
-        value={facultyName}
-        onChangeText={setFacultyName}
-        style={styles.textinput}
-      />
-      <TextInput
-        label="Faculty Email"
-        value={facultyEmail}
-        onChangeText={setFacultyEmail}
-        keyboardType="email-address"
-        style={styles.textinput}
-      />
-      <TextInput
-        label="Title"
-        value={title}
-        onChangeText={settitle}
-        multiline
-        style={styles.textinput}
-      />
-      <TextInput
-        label="Decription"
-        value={description}
-        onChangeText={setdescription}
-        multiline
-        style={styles.textinput}
-      />
-      <TextInput
-        label="Date"
-        value={date}
-        onChangeText={setDate}
-        placeholder="YYYY-MM-DD"
-        style={styles.textinput}
-      />
-      <TextInput
-        label="Time"
-        value={time}
-        onChangeText={setTime}
-        placeholder="HH:MM AM/PM"
-        style={styles.textinput}
-      />
-      <Button mode="contained" onPress={handleSubmit} style={styles.button}>
-        Submit Request
-      </Button>
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Request an Appointment</Text>
+        <TextInput
+          label="Your Name"
+          value={studentName}
+          onChangeText={setStudentName}
+          editable={false}
+          style={styles.textinput}
+        />
+        <TextInput
+          label="Your Email"
+          value={studentEmail}
+          onChangeText={setStudentEmail}
+          keyboardType="email-address"
+          editable={false}
+          style={styles.textinput}
+        />
+        <TextInput
+          label="Faculty Name"
+          value={facultyName}
+          onChangeText={setFacultyName}
+          style={styles.textinput}
+        />
+        <TextInput
+          label="Faculty Email"
+          value={facultyEmail}
+          onChangeText={setFacultyEmail}
+          keyboardType="email-address"
+          style={styles.textinput}
+        />
+        <TextInput
+          label="Title"
+          value={title}
+          onChangeText={settitle}
+          multiline
+          style={styles.textinput}
+        />
+        <TextInput
+          label="Decription"
+          value={description}
+          onChangeText={setdescription}
+          multiline
+          style={styles.textinput}
+        />
+        <TextInput
+          label="Date"
+          value={date}
+          onChangeText={setDate}
+          placeholder="YYYY-MM-DD"
+          style={styles.textinput}
+        />
+        <TextInput
+          label="Time"
+          value={time}
+          onChangeText={setTime}
+          placeholder="HH:MM AM/PM"
+          style={styles.textinput}
+        />
+        <Button mode="contained" onPress={handleSubmit} style={styles.button}>
+          Submit Request
+        </Button>
+      </View>
+    </SafeAreaView>
   );
 }
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://192.168.2.118:5000/api/appointments"; // Change to your backend URL
+const API_URL = "http://192.168.2.112:5000/api/appointments"; // Change to your backend URL
 
 export const requestAppointment = async (appointmentData) => {
   try {

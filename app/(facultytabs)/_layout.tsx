@@ -36,7 +36,7 @@ export default function TabLayout() {
             <IconSymbol
               size={28}
               name="house"
-              color={focused ? "#ea495c" : "grey"}
+              color={focused ? "#6097ff" : "4e5180"}
             />
           ),
         }}
@@ -49,7 +49,7 @@ export default function TabLayout() {
             <Entypo
               name="menu"
               size={28}
-              color={focused ? "#ea495c" : "grey"}
+              color={focused ? "#6097ff" : "4e5180"}
             />
           ),
         }}

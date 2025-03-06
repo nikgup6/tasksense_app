@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.2.118:5000/api/users";
+const API_URL = "http://192.168.2.112:5000/api/users";
 
 export const fetchProfile = async (token: string) => {
     const response = await fetch(API_URL, {

@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Modal,
+  Alert,
 } from "react-native";
 import { Button, Text, Card } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -55,7 +56,7 @@ export default function HomeScreen() {
         if (!token) throw new Error("No authentication token found");
 
         const response = await fetch(
-          `http://192.168.2.118:5000/api/appointments/faculty/${encodeURIComponent(
+          `http://192.168.2.112:5000/api/appointments/faculty/${encodeURIComponent(
             userEmail
           )}`,
           {
@@ -126,8 +127,6 @@ export default function HomeScreen() {
                     <Card.Content>
                       <Text style={styles.appointmentTitle}>{item.title}</Text>
                       <Text style={styles.appointmentDate}>
-                        {item.description} - {item.studentName} -{" "}
-                        {item.studentEmail}
                         {item.date} - {item.time}
                       </Text>
                     </Card.Content>
@@ -147,8 +146,6 @@ export default function HomeScreen() {
                     <Card.Content>
                       <Text style={styles.appointmentTitle}>{item.title}</Text>
                       <Text style={styles.appointmentDate}>
-                        {item.description} - {item.studentName} -{" "}
-                        {item.studentEmail}
                         {new Date(item.date).toDateString()} - {item.time}
                       </Text>
                     </Card.Content>
@@ -192,6 +189,15 @@ export default function HomeScreen() {
               <>
                 <Text style={styles.modalTitle}>
                   {selectedAppointment.title}
+                </Text>
+                <Text style={styles.modalText}>
+                  Description- {selectedAppointment.description}
+                </Text>
+                <Text style={styles.modalText}>
+                  Student Name-{selectedAppointment.studentName}
+                </Text>
+                <Text style={styles.modalText}>
+                  Student Email-{selectedAppointment.studentEmail}
                 </Text>
                 <Text style={styles.modalText}>
                   📅 Date: {selectedAppointment.date}

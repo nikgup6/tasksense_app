@@ -14,6 +14,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useNavigation } from "expo-router";
 import { useRouter } from "expo-router";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const [userName, setUserName] = useState<string | null>(null);
@@ -55,7 +56,7 @@ export default function HomeScreen() {
         if (!token) throw new Error("No authentication token found");
 
         const response = await fetch(
-          `http://192.168.2.118:5000/api/appointments/student/${encodeURIComponent(
+          `http://192.168.2.112:5000/api/appointments/student/${encodeURIComponent(
             userEmail
           )}`,
           {
@@ -87,132 +88,158 @@ export default function HomeScreen() {
   };
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#fff", dark: "#fff" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/auth.avif")}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">TaskSense</ThemedText>
-      </ThemedView>
-
-      <View>
-        <Text style={styles.title}>
-          Welcome, {userName ? userName : "Guest"}!!!
-        </Text>
-        <ThemedText style={styles.subtitle}>
-          Simplified Management Portal
-        </ThemedText>
-      </View>
-      <View>
-        <Button onPress={() => router.push("/(tabs)/RequestAppointmentScreen")}>
-          Add New Appointment
-        </Button>
-      </View>
-
-      {loading ? (
-        <Text style={styles.loadingText}>Loading appointments...</Text>
-      ) : (
-        <>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>
-              📅 Upcoming(Approved) Appointments
-            </Text>
-            <FlatList
-              data={appointments.filter((appt) => appt.status === "upcoming")}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleSelectAppointment(item)}>
-                  <Card style={styles.card}>
-                    <Card.Content>
-                      <Text style={styles.appointmentTitle}>{item.title}</Text>
-                      <Text style={styles.appointmentDate}>
-                        {item.date} - {item.time}
-                      </Text>
-                    </Card.Content>
-                  </Card>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>⏲️Pending Apointments</Text>
-            <FlatList
-              data={appointments.filter((appt) => appt.status === "pending")}
-              keyExtractor={(item) => item._id} // Use _id instead of id
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleSelectAppointment(item)}>
-                  <Card style={styles.card}>
-                    <Card.Content>
-                      <Text style={styles.appointmentTitle}>{item.title}</Text>
-                      <Text style={styles.appointmentDate}>
-                        {new Date(item.date).toDateString()} - {item.time}
-                      </Text>
-                    </Card.Content>
-                  </Card>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>🔙 Past Appointments</Text>
-            <FlatList
-              data={appointments.filter((appt) => appt.status === "past")}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleSelectAppointment(item)}>
-                  <Card style={styles.card}>
-                    <Card.Content>
-                      <Text style={styles.appointmentTitle}>{item.title}</Text>
-                      <Text style={styles.appointmentDate}>
-                        {item.date} - {item.time}
-                      </Text>
-                    </Card.Content>
-                  </Card>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </>
-      )}
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+    <SafeAreaView style={{ flex: 1 }}>
+      <ParallaxScrollView
+        headerBackgroundColor={{ light: "#fff", dark: "#fff" }}
+        headerImage={
+          <Image
+            source={require("@/assets/images/auth.avif")}
+            style={styles.reactLogo}
+          />
+        }
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            {selectedAppointment && (
-              <>
-                <Text style={styles.modalTitle}>
-                  {selectedAppointment.title}
-                </Text>
-                <Text style={styles.modalText}>
-                  📅 Date: {selectedAppointment.date}
-                </Text>
-                <Text style={styles.modalText}>
-                  ⏰ Time: {selectedAppointment.time}
-                </Text>
-                <Button
-                  mode="contained"
-                  onPress={() => setModalVisible(false)}
-                  style={styles.closeButton}
-                >
-                  Close
-                </Button>
-              </>
-            )}
-          </View>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">TaskSense</ThemedText>
+        </ThemedView>
+
+        <View>
+          <Text style={styles.title}>
+            Welcome, {userName ? userName : "Guest"}!!!
+          </Text>
+          <ThemedText style={styles.subtitle}>
+            Simplified Management Portal
+          </ThemedText>
         </View>
-      </Modal>
-    </ParallaxScrollView>
+        <View>
+          <Button
+            onPress={() => router.push("/(tabs)/RequestAppointmentScreen")}
+            style={styles.addreq}
+          >
+            <Text style={styles.buttext}>+ Add New Appointment</Text>
+          </Button>
+        </View>
+
+        {loading ? (
+          <Text style={styles.loadingText}>Loading appointments...</Text>
+        ) : (
+          <>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>
+                📅 Upcoming(Approved) Appointments
+              </Text>
+              <FlatList
+                data={appointments.filter((appt) => appt.status === "upcoming")}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => handleSelectAppointment(item)}
+                  >
+                    <Card style={styles.card}>
+                      <Card.Content>
+                        <Text style={styles.appointmentTitle}>
+                          {item.title}
+                        </Text>
+                        <Text style={styles.appointmentDate}>
+                          {item.date} - {item.time}
+                        </Text>
+                      </Card.Content>
+                    </Card>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>⏲️Pending Apointments</Text>
+              <FlatList
+                data={appointments.filter((appt) => appt.status === "pending")}
+                keyExtractor={(item) => item._id} // Use _id instead of id
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => handleSelectAppointment(item)}
+                  >
+                    <Card style={styles.card}>
+                      <Card.Content>
+                        <Text style={styles.appointmentTitle}>
+                          {item.title}
+                        </Text>
+                        <Text style={styles.appointmentDate}>
+                          {new Date(item.date).toDateString()} - {item.time}
+                        </Text>
+                      </Card.Content>
+                    </Card>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>🔙 Past Appointments</Text>
+              <FlatList
+                data={appointments.filter((appt) => appt.status === "past")}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => handleSelectAppointment(item)}
+                  >
+                    <Card style={styles.card}>
+                      <Card.Content>
+                        <Text style={styles.appointmentTitle}>
+                          {item.title}
+                        </Text>
+                        <Text style={styles.appointmentDate}>
+                          {item.date} - {item.time}
+                        </Text>
+                      </Card.Content>
+                    </Card>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          </>
+        )}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              {selectedAppointment && (
+                <>
+                  <Text style={styles.modalTitle}>
+                    {selectedAppointment.title}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    {selectedAppointment.description}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    Faculty Name: {selectedAppointment.facultyName}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    Faculty Email: {selectedAppointment.facultyEmail}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    📅 Date: {selectedAppointment.date}
+                  </Text>
+                  <Text style={styles.modalText}>
+                    ⏰ Time: {selectedAppointment.time}
+                  </Text>
+                  <Button
+                    mode="contained"
+                    onPress={() => setModalVisible(false)}
+                    style={styles.closeButton}
+                  >
+                    Close
+                  </Button>
+                </>
+              )}
+            </View>
+          </View>
+        </Modal>
+      </ParallaxScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -255,13 +282,25 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
-  modalTitle: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
-  modalText: { fontSize: 18, marginBottom: 5 },
+  modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+  modalText: { fontSize: 16, marginBottom: 5 },
   closeButton: { marginTop: 20 },
   loadingText: {
     textAlign: "center",
     marginTop: 20,
     fontSize: 16,
     color: "#555",
+  },
+  addreq: {
+    borderRadius: 8,
+    backgroundColor: "#6097ff",
+    padding: 15,
+    marginTop: 10,
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  buttext: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });

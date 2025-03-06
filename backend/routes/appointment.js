@@ -59,18 +59,28 @@ router.get('/faculty/:email', async (req, res) => {
 });
 
 // 📌 PATCH: Faculty Updates Appointment Status
-router.patch("/:id", async (req, res) => {
+router.put("/update-status/:id", async (req, res) => {
   try {
     const { status } = req.body;
-    const updatedappointment = await appointment.findByIdAndUpdate(
+    
+    // Validate status input
+    if (!["approved", "rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const appointment = await Appointment.findByIdAndUpdate(
       req.params.id,
       { status },
       { new: true }
     );
-    res.json(updatedappointment);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.status(200).json({ message: "Status updated successfully", appointment });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Error updating status", error });
   }
 });
-
 module.exports = router;
